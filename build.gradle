@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'org.jetbrains.kotlin.kapt' version '1.4.0'
+}
+
+group = "org.photo"
+version = "1.0.0"
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOptIn',
+                             '-Xjvm-default=enable']
+    }
+}
+
+
+dependencies {
+    def core = "2.0-M2-1"
+    def console = "2.0-M2-1-dev-1"
+    api("org.yaml:snakeyaml:1.26")
+    api("com.alibaba:fastjson:1.2.75")
+    compileOnly("net.mamoe:mirai-core:$core")
+    compileOnly("net.mamoe:mirai-console:$console")
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    def autoService = '1.0-rc7'
+    kapt "com.google.auto.service:auto-service:$autoService"
+    compileOnly "com.google.auto.service:auto-service-annotations:$autoService"
+
+    testImplementation("net.mamoe:mirai-core:$core")
+    testImplementation("net.mamoe:mirai-console:$console")
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib"
+}
+
+shadowJar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.photo.acg.photo.AcgPhotoPluginMain'
+        )
+    }
+    // 打包时排除指定的 jar 包
+    dependencies {
+
+    }
+    // 将 build.gradle 打入到 jar 中, 方便查看依赖包版本
+    from("./"){
+        include 'build.gradle'
+    }
+}
