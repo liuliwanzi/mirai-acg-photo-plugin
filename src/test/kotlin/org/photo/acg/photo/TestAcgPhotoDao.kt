@@ -8,6 +8,6 @@ class TestAcgPhotoDao {
     @Test
     fun test() {
         val acgPhoto = AcgPhotoDao.getAcgPhoto()
-        JSONObject.toJSONString(acgPhoto)
+        print(JSONObject.toJSONString(acgPhoto))
     }
 }

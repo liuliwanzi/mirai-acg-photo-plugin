@@ -24,7 +24,12 @@ object AcgPhotoPluginMain : KotlinPlugin(JvmPluginDescription.loadFromResource()
                     send(group, "你好", bot)
                 }
                 if (message.contentToString() == "色图") {
-                    AcgPhotoDao.getAcgPhoto().getData()?.get(0)?.let { it1 -> it1.url?.let { it2 -> send(group, it2, bot) } }
+                    val acgPhoto = AcgPhotoDao.getAcgPhoto()
+                    if(acgPhoto.getCode()==1) {
+                        acgPhoto.getData()?.get(0)?.let { it1 -> it1.url?.let { it2 -> send(group, it2, bot) } }
+                    }else{
+                        acgPhoto.getMsg()?.let { it1 -> send(group, it1,bot) }
+                    }
                 }
                 if (message.contentToString() == "nn" || message.contentToString() == "牛子哥") {
                     send(group, "那你能帮帮我吗", bot)
