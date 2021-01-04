@@ -8,6 +8,9 @@ import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
+import net.mamoe.mirai.message.code.parseMiraiCode
+import net.mamoe.mirai.message.data.At
+import net.mamoe.mirai.message.data.MessageChain
 import org.photo.acg.photo.dao.AcgPhotoDao
 
 @ConsoleExperimentalApi
@@ -17,18 +20,27 @@ object AcgPhotoPluginMain : KotlinPlugin(JvmPluginDescription.loadFromResource()
         launch { bot.getGroup(group.id)?.sendMessage(messageChain) }
     }
 
+    private suspend inline fun send(group: Group, messageChain: MessageChain, bot: Bot) {
+        launch { bot.getGroup(group.id)?.sendMessage(messageChain) }
+    }
+
     private fun setupMsgHandle() {
         globalEventChannel().subscribeGroupMessages {
             always {
                 if (message.contentToString() == "acg") {
                     send(group, "你好", bot)
                 }
+                if (message.contentToString() == "你好") {
+                    val id = sender.id
+                    val at = At(id).toMiraiCode() + "你好！"
+                    send(group, at.parseMiraiCode(), bot)
+                }
                 if (message.contentToString() == "色图") {
                     val acgPhoto = AcgPhotoDao.getAcgPhoto()
-                    if(acgPhoto.getCode()==1) {
+                    if (acgPhoto.getCode() == 1) {
                         acgPhoto.getData()?.get(0)?.let { it1 -> it1.url?.let { it2 -> send(group, it2, bot) } }
-                    }else{
-                        acgPhoto.getMsg()?.let { it1 -> send(group, it1,bot) }
+                    } else {
+                        acgPhoto.getMsg()?.let { it1 -> send(group, it1, bot) }
                     }
                 }
                 if (message.contentToString() == "nn" || message.contentToString() == "牛子哥") {
