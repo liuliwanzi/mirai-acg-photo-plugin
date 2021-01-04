@@ -1,5 +1,6 @@
 package org.photo.acg.photo
 
+import com.alibaba.fastjson.JSONObject
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
@@ -37,8 +38,10 @@ object AcgPhotoPluginMain : KotlinPlugin(JvmPluginDescription.loadFromResource()
                 }
                 if (message.contentToString() == "色图") {
                     val acgPhoto = AcgPhotoDao.getAcgPhoto()
-                    if (acgPhoto.getCode() == 1) {
-                        acgPhoto.getData()?.get(0)?.let { it1 -> it1.url?.let { it2 -> send(group, it2, bot) } }
+                    logger.info(JSONObject.toJSONString(acgPhoto))
+                    if (acgPhoto.getCode() == 0) {
+                        val url = acgPhoto.getData()?.get(0)?.url.toString()
+                        send(group, url, bot)
                     } else {
                         acgPhoto.getMsg()?.let { it1 -> send(group, it1, bot) }
                     }
@@ -49,6 +52,7 @@ object AcgPhotoPluginMain : KotlinPlugin(JvmPluginDescription.loadFromResource()
             }
         }
     }
+
 
     override fun onEnable() {
         super.onEnable()
