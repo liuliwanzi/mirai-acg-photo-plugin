@@ -33,7 +33,7 @@ object AcgPhotoDao {
         val apikey = map.getOrDefault("apikey", "").toString()
         val r18 = map.getOrDefault("r18", "0").toString()
         val size1200 = map.getOrDefault("size1200", "true").toString()
-        val url = "https://api.lolicon.app/setu?aipkey=%s&r18=%s&size200=%s"
+        val url = "https://api.lolicon.app/setu?apikey=%s&r18=%s&size200=%s"
         val okHttpClient = getOkhttpClient()
         val request: Request = Request.Builder().url(String.format(url, apikey, r18, size1200)).build()
         println(request.url)
